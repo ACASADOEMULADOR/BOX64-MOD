@@ -5,6 +5,7 @@
 #include <errno.h>
 
 #include "os.h"
+#include "env.h"
 #include "backtrace.h"
 #include "box64context.h"
 #include "debug.h"
@@ -2737,10 +2738,15 @@ void loadProtectionFromMap()
                 have48bits = 1;
         }
     }
+    if(BOX64ENV(force48bit))
+        have48bits = 1;
+
     static int shown48bits = 0;
     if(!shown48bits) {
         shown48bits = 1;
-        if(have48bits)
+        if(BOX64ENV(force48bit))
+            printf_log(LOG_INFO, "Forced 48bits of address space\n");
+        else if(have48bits)
             printf_log(LOG_INFO, "Detected 48bits at least of address space\n");
         else
             printf_log(LOG_INFO, "Didn't detect 48bits of address space, considering it's 39bits\n");
