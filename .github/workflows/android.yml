@@ -1,0 +1,29 @@
+name: Build Android (Termux / MiceWine)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Box64 Repository
+        uses: actions/checkout@v4
+
+      - name: Build Box64 for Android
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake \
+                   -DANDROID_ABI=arm64-v8a \
+                   -DANDROID_PLATFORM=android-24 \
+                   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+                   -DBAD_SIGNAL=ON \
+                   -DANDROID=1
+          make -j$(nproc) VERBOSE=1
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: box64-android-arm64
+          path: build/box64
