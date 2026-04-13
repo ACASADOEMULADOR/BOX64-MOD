@@ -3272,6 +3272,26 @@ EXPORT void* box_mmap(void *addr, size_t length, int prot, int flags, int fd, ss
         new_flags = (addr && isBlockFree(addr, length) )? (new_flags|MAP_FIXED) : new_flags;
         if((new_flags&(MAP_FIXED|MAP_FIXED_NOREPLACE))==(MAP_FIXED|MAP_FIXED_NOREPLACE)) new_flags&=~MAP_FIXED_NOREPLACE;
         ret = InternalMmap(addr, length, prot, new_flags, fd, offset);
+        
+        // [WoW64 GPU Hack] Fallback Agressivo para Forçar Memória < 4GB
+        if ((ret != MAP_FAILED) && ((uintptr_t)ret > 0xffffffffLL)) {
+            InternalMunmap(ret, length);
+            uintptr_t fallback = 0x20000000;
+            while(fallback < 0xefffffffLL) {
+                if(isBlockFree((void*)fallback, length)) {
+                    ret = InternalMmap((void*)fallback, length, prot, new_flags | MAP_FIXED, fd, offset);
+                    if((ret != MAP_FAILED) && ((uintptr_t)ret <= 0xffffffffLL)) {
+                        break;
+                    }
+                    if(ret != MAP_FAILED) {
+                        InternalMunmap(ret, length);
+                        ret = MAP_FAILED;
+                    }
+                }
+                fallback += 0x1000000; // Avança 16MB e tenta de novo
+            }
+        }
+
         if(old_addr && ret!=old_addr && ret!=MAP_FAILED)
             errno = olderr;
     } else if((ret!=MAP_FAILED) && !(flags&MAP_FIXED) && ((box64_wine)) && (addr && (addr!=ret)) &&
