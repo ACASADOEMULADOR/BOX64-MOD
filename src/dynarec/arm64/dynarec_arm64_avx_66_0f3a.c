@@ -819,7 +819,7 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             u8 = F8;
             MOV32w(x5, u8);
             CALL(const_sse42_compare_string_explicit_len, x1);
-            v0 = ymm_get_reg_empty(dyn, ninst, x2, gd, -1, -1, -1);
+            v0 = ymm_get_reg_empty(dyn, ninst, x2, 0, -1, -1, -1);
             if(u8&0b1000000) {
                 q1 = fpu_get_scratch(dyn, ninst);
                 switch(u8&1) {
@@ -850,7 +850,7 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
                 VEORQ(v0, v0, v0);
                 VMOVQHfrom(v0, 0, x1);
             }
-            YMM0(gd);
+            YMM0(0);
             READFLAGS(X_ALL);
             break;
         case 0x61:
@@ -912,7 +912,7 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             u8 = F8;
             MOV32w(x3, u8);
             CALL(const_sse42_compare_string_implicit_len, x1);
-            v0 = ymm_get_reg_empty(dyn, ninst, x2, gd, -1, -1, -1);
+            v0 = ymm_get_reg_empty(dyn, ninst, x2, 0, -1, -1, -1);
             if(u8&0b1000000) {
                 q1 = fpu_get_scratch(dyn, ninst);
                 switch(u8&1) {
@@ -943,7 +943,7 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
                 VEORQ(v0, v0, v0);
                 VMOVQHfrom(v0, 0, x1);
             }
-            YMM0(gd);
+            YMM0(0);
             READFLAGS(X_ALL);
             break;
         case 0x63:
