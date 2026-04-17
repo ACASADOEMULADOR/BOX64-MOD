@@ -1123,6 +1123,24 @@ uintptr_t dynarec64_AVX_66_0F38(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             if(!vex.l) YMM0(gd);
             break;
 
+        case 0x55:
+            INST_NAME("VPOPCNTD/Q Gx, Ex");
+            nextop = F8;
+            for(int l=0; l<1+vex.l; ++l) {
+                if(!l) { GETGX_empty_EX(v0, v1, 0); } else { GETGY_empty_EY(v0, v1); }
+                q0 = fpu_get_scratch(dyn, ninst);
+                CNT_8(q0, v1);
+                UADDLP_8(q0, q0);
+                UADDLP_16(q0, q0);
+                if(rex.w) {
+                    UADDLP_32(v0, q0);
+                } else {
+                    VMOVQ(v0, q0);
+                }
+            }
+            if(!vex.l) YMM0(gd);
+            break;
+
         case 0x58:
             INST_NAME("VPBROADCASTD Gx, Ex");
             nextop = F8;
