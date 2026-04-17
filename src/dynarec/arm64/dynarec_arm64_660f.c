@@ -1311,7 +1311,8 @@ uintptr_t dynarec64_660F(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip, int n
                     SETFLAGS(X_ALL, SF_SET_DF);
                     nextop = F8;
                     GETG;
-                    sse_forget_reg(dyn, ninst, gd);
+                    if(gd>7)
+                        sse_reflect_reg(dyn, ninst, gd);
                     ADDx_U12(x3, xEmu, offsetof(x64emu_t, xmm[gd]));
                     if(MODREG) {
                         ed = (nextop&7)+(rex.b<<3);
@@ -1405,7 +1406,8 @@ uintptr_t dynarec64_660F(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip, int n
                     SETFLAGS(X_ALL, SF_SET_DF);
                     nextop = F8;
                     GETG;
-                    sse_forget_reg(dyn, ninst, gd);
+                    if(gd>7)
+                        sse_reflect_reg(dyn, ninst, gd);
                     ADDx_U12(x2, xEmu, offsetof(x64emu_t, xmm[gd]));
                     if(MODREG) {
                         ed = (nextop&7)+(rex.b<<3);

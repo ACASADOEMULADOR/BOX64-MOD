@@ -800,9 +800,9 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             INST_NAME("VPCMPESTRM Gx, Ex, Ib");
             SETFLAGS(X_ALL, SF_SET_DF);
             nextop = F8;
-            GETG;
-            sse_forget_reg(dyn, ninst, gd);
-            ADDx_U12(x3, xEmu, offsetof(x64emu_t, xmm[gd]));
+            if(vex.v>7)
+                sse_reflect_reg(dyn, ninst, vex.v);
+            ADDx_U12(x3, xEmu, offsetof(x64emu_t, xmm[vex.v]));
             if(MODREG) {
                 ed = (nextop&7)+(rex.b<<3);
                 if(ed>7)
@@ -857,10 +857,9 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             INST_NAME("VPCMPESTRI Gx, Ex, Ib");
             SETFLAGS(X_ALL, SF_SET_DF);
             nextop = F8;
-            GETG;
-            if(gd>7)    // no need to reflect cache as xmm0-xmm7 will be saved before the function call anyway
-                sse_reflect_reg(dyn, ninst, gd);
-            ADDx_U12(x3, xEmu, offsetof(x64emu_t, xmm[gd]));
+            if(vex.v>7)
+                sse_reflect_reg(dyn, ninst, vex.v);
+            ADDx_U12(x3, xEmu, offsetof(x64emu_t, xmm[vex.v]));
             if(MODREG) {
                 ed = (nextop&7)+(rex.b<<3);
                 if(ed>7)
@@ -895,9 +894,9 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             INST_NAME("VPCMPISTRM Gx, Ex, Ib");
             SETFLAGS(X_ALL, SF_SET_DF);
             nextop = F8;
-            GETG;
-            sse_forget_reg(dyn, ninst, gd);
-            ADDx_U12(x2, xEmu, offsetof(x64emu_t, xmm[gd]));
+            if(vex.v>7)
+                sse_reflect_reg(dyn, ninst, vex.v);
+            ADDx_U12(x2, xEmu, offsetof(x64emu_t, xmm[vex.v]));
             if(MODREG) {
                 ed = (nextop&7)+(rex.b<<3);
                 if(ed>7)
@@ -950,10 +949,9 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             INST_NAME("VPCMPISTRI Gx, Ex, Ib");
             SETFLAGS(X_ALL, SF_SET_DF);
             nextop = F8;
-            GETG;
-            if(gd>7)
-                sse_reflect_reg(dyn, ninst, gd);
-            ADDx_U12(x2, xEmu, offsetof(x64emu_t, xmm[gd]));
+            if(vex.v>7)
+                sse_reflect_reg(dyn, ninst, vex.v);
+            ADDx_U12(x2, xEmu, offsetof(x64emu_t, xmm[vex.v]));
             if(MODREG) {
                 ed = (nextop&7)+(rex.b<<3);
                 if(ed>7)
