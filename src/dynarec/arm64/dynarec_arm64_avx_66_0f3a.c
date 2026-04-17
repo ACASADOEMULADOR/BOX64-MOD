@@ -877,17 +877,16 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             u8 = F8;
             MOV32w(x5, u8);
             CALL(const_sse42_compare_string_explicit_len, x1);
+            CBNZw_MARK(x1);
+            MOV32w(xRCX, (u8&1)?8:16);
+            B_NEXT_nocond;
+            MARK;
             if(u8&0b1000000) {
-                CBNZw_MARK(x1);
-                MOV32w(xRCX, (u8&1)?8:16);
-                B_NEXT_nocond;
-                MARK;
                 CLZw(xRCX, x1);
                 MOV32w(x2, 31);
                 SUBw_REG(xRCX, x2, xRCX);
             } else {
-                ORRw_mask(xRCX, x1, (u8&1)?0b011000:0b010000,0);
-                RBITw(xRCX, xRCX);
+                RBITw(xRCX, x1);
                 CLZw(xRCX, xRCX);
             }
             READFLAGS(X_ALL);
@@ -969,16 +968,16 @@ uintptr_t dynarec64_AVX_66_0F3A(dynarec_arm_t* dyn, uintptr_t addr, uintptr_t ip
             u8 = F8;
             MOV32w(x3, u8);
             CALL(const_sse42_compare_string_implicit_len, x1);
+            CBNZw_MARK(x1);
+            MOV32w(xRCX, (u8&1)?8:16);
+            B_NEXT_nocond;
+            MARK;
             if(u8&0b1000000) {
-                CBNZw_MARK(x1);
-                MOV32w(xRCX, (u8&1)?8:16);
-                B_NEXT_nocond;
-                MARK;
                 CLZw(xRCX, x1);
                 MOV32w(x2, 31);
                 SUBw_REG(xRCX, x2, xRCX);
             } else {
-                RBITxw(xRCX, x1);
+                RBITw(xRCX, x1);
                 CLZw(xRCX, xRCX);
             }
             READFLAGS(X_ALL);
